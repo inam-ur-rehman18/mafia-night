@@ -1,0 +1,8 @@
+{
+  "name": "mafia-night",
+  "version": "1.0.0",
+  "description": "Multiplayer Mafia game, one tiny Node server, no dependencies",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

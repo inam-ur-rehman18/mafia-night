@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="noir" data-phase="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mafia Night</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Orbitron:wght@700;900&family=Pirata+One&family=Figtree:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#0e0b0a;--bg2:#1f1612;--surface:#2a1f19;--line:#5a4435;--ink:#f6ecdf;--muted:#bba68f;--accent:#e0a93f;--on:#1b130d;--accent2:#8c1d2c;--bad:#ff6074;--good:#7bc79a;--disp:"Abril Fatface",Georgia,serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[data-theme=neon]{--bg:#080620;--bg2:#1a0f3d;--surface:#241a5c;--line:#5b3bc0;--ink:#f1ecff;--muted:#a79bd8;--accent:#19f0d0;--on:#06143a;--accent2:#ff2e93;--bad:#ff4d8d;--good:#19f0d0;--disp:Orbitron,Impact,sans-serif}
+[data-theme=haunt]{--bg:#0a120e;--bg2:#16261d;--surface:#1e3528;--line:#3f6b55;--ink:#e6efe3;--muted:#97b3a2;--accent:#b6e36b;--on:#10200f;--accent2:#7a3fb5;--bad:#ff7a59;--good:#8fe3b0;--disp:"Pirata One",Georgia,serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(120% 60% at 80% 0%,color-mix(in srgb,var(--accent2) 40%,transparent),transparent 60%),linear-gradient(180deg,var(--bg2),var(--bg) 75%) fixed;background-color:var(--bg);color:var(--ink);font:400 16px/1.45 Figtree,system-ui,sans-serif;overflow-x:hidden}
+[data-phase=day] body{background:radial-gradient(120% 70% at 80% 0%,color-mix(in srgb,var(--accent) 45%,transparent),transparent 65%),linear-gradient(180deg,color-mix(in srgb,var(--bg2) 60%,var(--accent)),var(--bg2) 80%) fixed;background-color:var(--bg2)}
+.orb{position:fixed;top:16px;right:18px;width:50px;height:50px;border-radius:50%;background:#fff3d6;box-shadow:0 0 50px 14px color-mix(in srgb,#fff3d6 38%,transparent);pointer-events:none;transition:all .8s}
+.orb::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--bg2);transform:translate(11px,-6px);transition:all .8s}
+[data-phase=day] .orb{background:var(--accent);box-shadow:0 0 70px 24px color-mix(in srgb,var(--accent) 55%,transparent)}
+[data-phase=day] .orb::after{opacity:0}
+.sky{position:fixed;left:0;right:0;bottom:0;width:100%;height:30vh;pointer-events:none;z-index:0}
+.sky .bld{fill:color-mix(in srgb,var(--bg) 85%,#000)}.sky .win rect{fill:var(--accent);animation:tw 3s infinite alternate}
+[data-phase=day] .sky .bld{fill:color-mix(in srgb,var(--bg2) 70%,#000)}
+.sky .win rect:nth-child(3n){animation-delay:-1s}.sky .win rect:nth-child(3n+1){animation-delay:-2s}
+@keyframes tw{from{opacity:.15}to{opacity:.9}}
+.fog{position:fixed;left:-20%;right:-20%;bottom:0;height:30%;background:radial-gradient(60% 100% at 30% 100%,color-mix(in srgb,var(--ink) 14%,transparent),transparent),radial-gradient(50% 90% at 75% 100%,color-mix(in srgb,var(--ink) 10%,transparent),transparent);animation:drift 14s ease-in-out infinite alternate;pointer-events:none}
+@keyframes drift{to{transform:translateX(12%)}}
+#app{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:16px 16px 70px}
+.page{animation:pin .4s ease-out}@keyframes pin{from{opacity:0;transform:translateY(14px)}}
+h1,h2,h3{font-family:var(--disp);font-weight:400;margin:0 0 8px;line-height:1.05}
+h1{font-size:38px}h2{font-size:25px;margin-top:18px}h3{font-size:20px}
+.big{font-size:clamp(36px,12vw,58px)}
+.sub{color:var(--muted);margin:0 0 12px}.c{text-align:center}p{margin:0 0 10px}
+.logo{font-family:var(--disp);text-align:center;line-height:.88;color:var(--accent);-webkit-text-stroke:3px #16101f;paint-order:stroke fill;text-shadow:0 4px 0 #16101f,0 8px 0 var(--accent2),0 14px 24px #000a;transform:rotate(-3deg);margin:6px 0 22px}
+.logo span{display:block;font-size:clamp(64px,22vw,104px)}.logo span+span{font-size:clamp(48px,17vw,80px);color:var(--ink)}
+.top{display:flex;align-items:center;gap:8px;margin:0 64px 12px 0;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:2px solid var(--line);border-radius:99px;padding:4px 12px;font-weight:700;font-size:14px;white-space:nowrap}
+.pill b{color:var(--accent);letter-spacing:.14em}
+.panel{background:color-mix(in srgb,var(--surface) 90%,transparent);border:2px solid var(--line);border-radius:22px;padding:16px;margin:12px 0;box-shadow:0 6px 0 #0006}
+.row{display:flex;gap:10px;margin:10px 0}
+input{flex:1;min-width:0;font:inherit;padding:13px 14px;border-radius:14px;border:3px solid #16101f;background:var(--bg);color:var(--ink)}
+input.code{text-transform:uppercase;letter-spacing:.35em;text-align:center;font-weight:700;font-size:22px}
+.btn{font:700 17px Figtree,sans-serif;padding:13px 16px;border-radius:16px;border:3px solid #16101f;background:var(--surface);color:var(--ink);cursor:pointer;flex:1;box-shadow:0 5px 0 #000a;transition:transform .08s,box-shadow .08s}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 #000a}
+.btn.main{background:linear-gradient(var(--accent),color-mix(in srgb,var(--accent) 72%,#000));color:var(--on);width:100%;font-size:19px}
+.btn.sm{padding:8px 12px;font-size:14px;flex:0 0 auto;box-shadow:0 3px 0 #000a}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 30%,var(--surface));border-color:var(--accent)}
+.menu{display:flex;flex-direction:column;gap:14px;margin:6px 0 0}
+.back{margin-bottom:8px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chr{width:100%;height:auto;display:block;overflow:visible}.pawn{width:var(--sz,52px);height:var(--sz,52px);display:block;overflow:visible}
+.bob{animation:bob 2.6s ease-in-out infinite;transform-origin:60px 140px}@keyframes bob{50%{transform:translateY(-4px) scaleY(1.015)}}
+.eye{animation:blink 4.2s infinite;transform-box:fill-box;transform-origin:center}@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+.glow{animation:pulse 1.5s ease-in-out infinite}@keyframes pulse{50%{opacity:.35}}
+.bell{animation:swing 1.1s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}@keyframes swing{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+.flap{animation:flap 1.2s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:top left}@keyframes flap{to{transform:rotate(12deg)}}
+.mag{animation:scan 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes scan{50%{transform:translate(-8px,-5px) rotate(-8deg)}}
+.gone{filter:grayscale(1) brightness(.8);animation:fall .9s ease-in forwards}@keyframes fall{from{transform:none}to{transform:rotate(-12deg) translateY(8px)}}
+.stage{display:flex;justify-content:center;align-items:flex-end;margin:0 -8px;position:relative;z-index:2}
+.stage>div{width:27%;margin:0 -2%}.stage>div:nth-child(odd){margin-bottom:-8px}
+.tag{display:inline-block;padding:4px 14px;border-radius:8px;border:3px solid #16101f;font:700 14px Figtree;background:var(--surface);transform:rotate(-2deg)}
+.tag.mafia{background:var(--bad);color:#fff}.tag.town{background:var(--good);color:#06210f}.tag.solo{background:var(--accent);color:var(--on)}
+.tbl{position:relative;width:min(100%,390px);aspect-ratio:1;margin:6px auto}
+.felt{position:absolute;inset:17%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent2) 55%,var(--bg)),var(--bg2));border:7px solid color-mix(in srgb,var(--line) 80%,#000);box-shadow:inset 0 0 36px #000a,0 12px 28px #000a;display:flex;align-items:center;justify-content:center;text-align:center;flex-direction:column;gap:2px}
+.felt b{font:400 34px var(--disp);color:var(--accent)}.felt small{color:var(--muted);font-weight:600}.felt svg{color:var(--accent)}
+.seat{position:absolute;transform:translate(-50%,-50%);width:calc(var(--sz) + 22px);background:none;border:0;color:var(--ink);display:flex;flex-direction:column;align-items:center;font:700 11px Figtree;cursor:default;padding:0;line-height:1.15;z-index:2}
+button.seat{cursor:pointer}
+.seat span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 2px #000}
+.seat i{font-style:normal;font-weight:600;color:var(--muted)}
+.seat.sel .pawn{transform:scale(1.2);filter:drop-shadow(0 0 10px var(--accent))}
+.seat.me span{color:var(--accent)}
+.seat.dead .pawn{filter:grayscale(1) brightness(.6)}.seat.dead span{text-decoration:line-through;opacity:.6}
+.seat em{position:absolute;top:-6px;right:2px;background:var(--bad);color:#fff;font:700 11px Figtree;font-style:normal;border-radius:99px;padding:1px 7px;border:2px solid #16101f}
+.rc{perspective:1000px;margin:14px auto;cursor:pointer;max-width:310px}
+.rc>div{position:relative;height:430px;transition:transform .8s;transform-style:preserve-3d}.rc.on>div{transform:rotateY(180deg)}
+.rc .f,.rc .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:26px;border:5px solid #16101f;box-shadow:0 8px 0 #000a;overflow:hidden}
+.rc .f{background:repeating-linear-gradient(45deg,var(--accent2) 0 14px,color-mix(in srgb,var(--accent2) 70%,#000) 14px 28px);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rc .f b{font:400 120px var(--disp);color:var(--accent);-webkit-text-stroke:4px #16101f;text-shadow:0 6px 0 #16101f}
+.rc .b{transform:rotateY(180deg);padding:14px;display:flex;flex-direction:column;align-items:center;text-align:center;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--accent) 35%,var(--surface)),var(--surface))}
+.rc .b .chr{width:62%;margin:6px 0}.rc .b h1{margin:4px 0}.rc .b p{font-size:14px;margin:4px 0}
+.timer{font:700 14px Figtree;color:var(--muted);display:flex;justify-content:space-between;margin:2px 0 6px}
+.bar{height:10px;border-radius:9px;background:#0007;border:2px solid #16101f;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);transition:width .3s linear}
+.react{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0}
+.bub{font:400 18px var(--disp);padding:7px 14px;border-radius:18px 18px 18px 4px;border:3px solid #16101f;background:#fff;color:#16101f;cursor:pointer;box-shadow:0 4px 0 #000a}
+.fl{position:fixed;bottom:90px;font:400 30px var(--disp);padding:6px 16px;border-radius:20px 20px 20px 4px;border:3px solid #16101f;background:#fff;color:#16101f;animation:up 3s ease-out forwards;pointer-events:none;z-index:9}
+@keyframes up{to{transform:translateY(-55vh) rotate(-6deg);opacity:0}}
+.list{list-style:none;margin:0;padding:0}.list li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.log li{display:block;color:var(--muted);font-size:14px}.log .h{color:var(--ink);font-weight:700;margin-top:8px}
+.intel{border-left:5px solid var(--accent)}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--bad);color:#fff;padding:12px 16px;border-radius:14px;font-weight:700;z-index:20;text-align:center;border:3px solid #16101f}
+.dots{display:flex;gap:8px;justify-content:center;margin:10px 0}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--accent);transform:scale(1.3)}
+.gal{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.gal button{background:var(--surface);border:3px solid #16101f;border-radius:14px;padding:6px 4px 4px;color:var(--ink);font:700 11px Figtree;cursor:pointer;box-shadow:0 3px 0 #000a}
+.gal button[aria-pressed=true]{background:color-mix(in srgb,var(--accent) 35%,var(--surface));border-color:var(--accent)}
+.hero{width:min(60%,230px);margin:0 auto}
+.sw{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:6px;vertical-align:-2px;border:2px solid #16101f}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.grid3>div{text-align:center;font-size:13px;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.hd{width:30px;height:30px;border-radius:50%;overflow:hidden;background:var(--bg);flex:none;border:2px solid #16101f}.hd svg{width:150%;margin:-25% 0 0 -25%}
+.walkers{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 2px);height:90px;pointer-events:none;z-index:0;overflow:hidden}
+.wk{position:absolute;bottom:0;animation:walk linear infinite}.wk .bob{animation-duration:.55s}
+@keyframes walk{from{transform:translateX(-90px)}to{transform:translateX(calc(100vw + 90px))}}
+.wk.r{animation-name:walkr}@keyframes walkr{from{transform:translateX(calc(100vw + 90px)) scaleX(-1)}to{transform:translateX(-90px) scaleX(-1)}}
+.peeker{position:fixed;right:-6px;width:86px;z-index:3;pointer-events:none;animation:pk 5s ease-in-out forwards}
+.peeker.l{right:auto;left:-6px;animation-name:pkl}
+@keyframes pk{0%,100%{transform:translateX(110%) rotate(-20deg)}15%,80%{transform:translateX(22%) rotate(-20deg)}}
+@keyframes pkl{0%,100%{transform:translateX(-110%) rotate(20deg)}15%,80%{transform:translateX(-22%) rotate(20deg)}}
+.fly{position:fixed;left:0;width:46px;z-index:0;pointer-events:none;animation:fly 9s linear forwards}
+.fly svg{width:100%;animation:flap2 .4s infinite alternate}@keyframes flap2{to{transform:scaleY(.4)}}
+@keyframes fly{from{transform:translateX(-60px)}to{transform:translate(calc(100vw + 60px),-40px)}}
+.stars,.clouds{position:fixed;inset:0;pointer-events:none;z-index:0;transition:opacity 1.2s;overflow:hidden}
+.stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:tw 2.5s infinite alternate}
+.clouds i{position:absolute;left:-30%;width:150px;height:40px;border-radius:40px;background:rgba(255,255,255,.55);filter:blur(2px);animation:cl linear infinite}
+@keyframes cl{to{transform:translateX(170vw)}}
+[data-phase=day] .stars{opacity:0}[data-phase=night] .clouds{opacity:0}
+.splash{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(circle,rgba(0,0,0,.25),rgba(0,0,0,.85));animation:sp 1.9s ease forwards;overflow:hidden}
+@keyframes sp{0%{opacity:0}14%,72%{opacity:1}100%{opacity:0}}
+.splash h1{color:var(--accent);-webkit-text-stroke:2px #16101f;paint-order:stroke fill;text-shadow:0 5px 0 #16101f;animation:zoom .6s cubic-bezier(.2,1.5,.4,1) both;text-align:center}
+.splash svg{animation:zoom .6s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes zoom{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+.slash{position:absolute;left:-10%;top:42%;width:120%;height:12px;background:#ff2d4a;box-shadow:0 0 36px #f00;transform:rotate(-20deg) scaleX(0);animation:sl .45s .25s forwards}
+@keyframes sl{to{transform:rotate(-20deg) scaleX(1)}}
+.cf{position:fixed;top:-16px;width:10px;height:15px;z-index:25;pointer-events:none;animation:cf 3.6s linear forwards}
+@keyframes cf{to{transform:translateY(108vh) rotate(760deg)}}
+.rc .b::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.4) 50%,transparent 60%);transform:translateX(-130%);animation:shine 3.2s infinite;pointer-events:none}
+@keyframes shine{60%,100%{transform:translateX(130%)}}
+.rc.on>div{animation:float 3s ease-in-out infinite .8s}@keyframes float{50%{margin-top:-8px}}
+.seat .pawn{animation:idle 3s ease-in-out infinite}@keyframes idle{50%{transform:translateY(-3px)}}
+.seat.sel .pawn{animation:selp .8s ease-in-out infinite}@keyframes selp{50%{transform:scale(1.3)}}
+.seat.dead .pawn{animation:none}
+.btn.main:not(:disabled){animation:cta 2.4s ease-in-out infinite}@keyframes cta{50%{filter:brightness(1.14)}}
+.logo span:first-child{animation:flick 5s infinite}@keyframes flick{0%,91%,100%{opacity:1}93%{opacity:.55}95%{opacity:1}97%{opacity:.5}}
+.stage>div{animation:rise .8s backwards cubic-bezier(.2,1.4,.4,1)}@keyframes rise{from{transform:translateY(130%) scale(.6);opacity:0}}
+.bob.jump{animation:jump .65s ease-in-out infinite}@keyframes jump{50%{transform:translateY(-16px)}}
+.car{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 16px 16px;margin:0 -16px}
+.mc{flex:0 0 140px;scroll-snap-align:center;background:var(--surface);color:var(--ink);border:3px solid #16101f;border-radius:20px;padding:8px 8px 12px;text-align:center;cursor:pointer;box-shadow:0 5px 0 #000a;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;transition:transform .2s}
+.mc b{font:400 19px var(--disp)}.mc small{color:var(--muted);font-size:12px;line-height:1.2}.mchr{width:78%}
+.mc.on{border-color:var(--accent);transform:translateY(-8px) scale(1.04);background:color-mix(in srgb,var(--accent) 22%,var(--surface));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 40%,transparent),0 0 26px color-mix(in srgb,var(--accent) 50%,transparent)}
+.rules{margin:10px 0 0;padding:0;list-style:none}.rules li{padding:5px 0 5px 24px;position:relative;font-size:15px}
+.rules li::before{content:"";position:absolute;left:2px;top:11px;width:10px;height:10px;background:var(--accent);transform:rotate(45deg);border:2px solid #16101f}
+.th{border:3px solid #16101f;border-radius:14px;color:#fff;font:700 13px Figtree;padding:18px 4px 10px;cursor:pointer;text-shadow:0 1px 2px #000;box-shadow:0 4px 0 #000a}
+.th[aria-pressed=true]{outline:3px solid var(--accent);outline-offset:2px;transform:translateY(-3px)}
+.gal button{position:relative}.gal button[aria-pressed=true]::after{content:"\2713";position:absolute;top:-8px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--on);font:700 14px/22px Figtree;border:2px solid #16101f}
+.gal button[aria-pressed=false]{opacity:.55}
+.seg{display:flex;border:3px solid #16101f;border-radius:14px;overflow:hidden;box-shadow:0 4px 0 #000a}
+.seg button{flex:1;padding:10px 4px;background:var(--surface);color:var(--ink);border:0;border-right:2px solid #16101f;font:700 14px Figtree;cursor:pointer}.seg button:last-child{border:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:var(--on)}
+.tog{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:10px 14px;border:3px solid #16101f;border-radius:14px;background:var(--surface);color:var(--ink);font:700 15px Figtree;cursor:pointer;box-shadow:0 4px 0 #000a;text-align:left}
+.tog i{flex:none;width:48px;height:26px;border-radius:99px;background:var(--line);position:relative;transition:background .2s;border:2px solid #16101f}
+.tog i::after{content:"";position:absolute;top:1px;left:1px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.tog[aria-pressed=true] i{background:var(--accent)}.tog[aria-pressed=true] i::after{transform:translateX(22px)}
+
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.5))}
+.beams{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;transition:opacity 1.2s}
+.beams i{position:absolute;top:-12%;width:34%;height:110%;background:linear-gradient(180deg,rgba(255,238,190,.2),transparent 75%);transform-origin:top center;filter:blur(10px);animation:sweep 9s ease-in-out infinite alternate}
+@keyframes sweep{from{transform:rotate(-24deg)}to{transform:rotate(22deg)}}
+[data-phase=day] .beams{opacity:.35}
+.embers{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.embers i{position:absolute;bottom:-10px;width:var(--s);height:var(--s);border-radius:50%;background:var(--accent);box-shadow:0 0 10px 2px var(--accent);opacity:0;animation:emb linear infinite}
+@keyframes emb{0%{transform:translate(0,0);opacity:0}12%{opacity:.85}60%{transform:translate(24px,-60vh)}100%{transform:translate(-18px,-108vh);opacity:0}}
+.shoot{position:fixed;width:110px;height:2px;background:linear-gradient(90deg,#fff,transparent);pointer-events:none;z-index:0;animation:shoot 1.2s ease-out forwards}
+@keyframes shoot{from{transform:translate(0,0) rotate(32deg);opacity:1}to{transform:translate(-280px,175px) rotate(32deg);opacity:0}}
+.orb{animation:orbp 6s ease-in-out infinite}@keyframes orbp{50%{transform:scale(1.08)}}
+.page>*:not(.logo){animation:cin .55s backwards cubic-bezier(.2,.9,.3,1)}
+.page>*:nth-child(2){animation-delay:.06s}.page>*:nth-child(3){animation-delay:.12s}.page>*:nth-child(4){animation-delay:.18s}.page>*:nth-child(5){animation-delay:.24s}.page>*:nth-child(n+6){animation-delay:.3s}
+@keyframes cin{from{opacity:0;transform:translateY(18px)}}
+.page .seat{animation:seatin .6s backwards cubic-bezier(.2,1.5,.4,1);animation-delay:calc(var(--i,0)*70ms + .1s)}@keyframes seatin{from{scale:0;opacity:0}}
+.felt{animation:fglow 4s ease-in-out infinite}@keyframes fglow{50%{box-shadow:inset 0 0 36px #000a,0 12px 28px #000a,0 0 44px color-mix(in srgb,var(--accent) 38%,transparent)}}
+.felt svg{animation:flick2 2.4s infinite}@keyframes flick2{0%,100%{opacity:1}45%{opacity:.8}50%{opacity:1}72%{opacity:.7}}
+.seat.sel::before{content:"";position:absolute;top:calc(var(--sz)/2);left:50%;width:calc(var(--sz)*1.35);height:calc(var(--sz)*1.35);margin:calc(var(--sz)*-.68) 0 0 calc(var(--sz)*-.68);border-radius:50%;border:3px solid var(--accent);animation:ring 1.2s ease-out infinite;pointer-events:none}
+@keyframes ring{from{transform:scale(.7);opacity:1}to{transform:scale(1.4);opacity:0}}
+.btn.main{position:relative;overflow:hidden}
+.btn.main::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:sheen 3.6s infinite;pointer-events:none}
+@keyframes sheen{55%,100%{left:140%}}
+.logo{animation:glowp 4s ease-in-out infinite}@keyframes glowp{50%{filter:drop-shadow(0 0 20px color-mix(in srgb,var(--accent) 65%,transparent))}}
+.bar.hot i{background:var(--bad);animation:cta .5s infinite}.bar.hot{border-color:var(--bad)}
+.panel{transition:border-color .3s}.mc,.th,.gal button{transition:transform .2s,opacity .2s}
+</style>
+</head>
+<body>
+<div class="orb"></div>
+<svg class="sky" id="sky" viewBox="0 0 400 130" preserveAspectRatio="xMidYMax slice"></svg>
+<div class="fog"></div>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const R={
+mafia:['Mafia','','mafia','Kill one player each night with your team. Win when Mafia equal everyone else.','Blend in at the table. Accuse early, but never too hard.'],
+godfather:['Godfather','','mafia','Lead the Mafia. The Detective sees you as innocent.','You look clean to the Detective. Use it to clear your name.'],
+villager:['Villager','','town','No power, but your voice and vote are your weapon.','Watch who defends whom. Votes tell stories.'],
+doctor:['Doctor','','town','Protect one player each night. You may protect yourself.','Guess who the Mafia want gone. Protect them.'],
+detective:['Detective','','town','Investigate one player each night to learn if they are Mafia.','Share what you learn carefully. Reveal too soon and you are a target.'],
+vigilante:['Vigilante','','town','Once per game, shoot a player at night.','One bullet. Make sure of your target.'],
+jester:['Jester','','solo','Get voted out by the town. That wins the game for you alone.','Act suspicious, but not so much it is obvious.']};
+const HINT={mafia:"Pick tonight's victim",godfather:"Pick tonight's victim",doctor:'Pick who to protect',detective:'Pick who to investigate',vigilante:'Pick who to shoot, or skip',villager:'Pick someone to watch (no effect)',jester:'Pick someone to watch (no effect)'};
+const THEMES=[['noir','Noir','#e0a93f','#1f1612','#8c1d2c'],['neon','Neon','#19f0d0','#1a0f3d','#ff2e93'],['haunt','Haunted','#b6e36b','#16261d','#7a3fb5']];
+const MI={
+classic:['Classic','mafia','The original game.',['Mafia kill one player each night.','The town votes out one player each day.','Roles are revealed when someone dies.'],4],
+chaos:['Chaos','jester','Random roles every game.',['Roles are random each game, even how many powers exist.','Jesters and Godfathers can appear.','Nobody knows what is in play.'],4],
+speed:['Speed','vigilante','Fast and frantic.',['Night and vote last 25 seconds.','Discussion is capped at 1 minute.','Decide fast, or the clock decides for you.'],4],
+outbreak:['Outbreak','doctor','Infect, do not kill.',['There is only one Mafia: Patient Zero.','At night they infect someone instead of killing.','Infected players secretly join the Mafia.','The Doctor can block an infection.'],5],
+courtroom:['Courtroom','detective','Put them on trial.',['The day vote only accuses someone.','The accused gets 35 seconds to defend.','Then everyone votes guilty or innocent.','Majority guilty and they are out.'],5],
+mayor:['Mayor','godfather','Rule by one vote.',['A random player is revealed as Mayor.','The Mayor vote counts double.','The Mayor could secretly be Mafia.'],4],
+paranoia:['Paranoia','villager','Trust no one.',['Votes are secret and ballots are never shown.','Roles stay hidden when players die.','You only have words to go on.'],4]};
+const ROLEOPT=[['doctor','Doctor'],['detective','Detective'],['vigilante','Vigilante'],['jester','Jester'],['godfather','Godfather']];
+const TEAM={mafia:'Mafia team',town:'Town team',solo:'Plays alone'};
+const BUBBLES=['Sus!','Liar!','Lol','Wow','Trust me','Nope'];
+let db,user,me,S=null,P={},code=null,isHost=false,unsubs=[],tickT=null,uiT=null,busy=false,peek=false,sel=null,selKey='',lastR={},myName='',page='title',how=0,csel='mafia',snd=true,theme='noir';
+try{myName=localStorage.getItem('mafia-name')||'';snd=localStorage.getItem('mafia-snd')!=='0'}catch(e){}
+const app=$('#app'),now=()=>Date.now(),isM=p=>p.role==='mafia'||p.role==='godfather';
+const ref=()=>db.doc('rooms/'+code),pref=id=>db.doc('rooms/'+code+'/p/'+id);
+const hue=id=>{let h=0;for(const c of String(id))h=(h*31+c.charCodeAt(0))%360;return h};
+const key=()=>S.phase==='night'?`n${S.g}-${S.round}`:S.phase==='vote'?`v${S.g}-${S.round}`:S.phase==='trial'?`t${S.g}-${S.round}`:'';
+const myAct=()=>{const a=P[me]&&P[me].act;return a&&a.k===key()?a:null};
+const alive=()=>S.players.filter(p=>p.alive);
+const winOf=pl=>{const m=pl.filter(p=>p.alive&&isM(p)).length,o=pl.filter(p=>p.alive&&!isM(p)).length;return m===0?'town':m>=o?'mafia':null};
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),3500)}
+function say(t){if(!isHost||!S||!S.opts.voice||!window.speechSynthesis)return;try{speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t))}catch(e){}}
+function beep(n){if(!snd)return;try{const a=new(window.AudioContext||window.webkitAudioContext)();for(let i=0;i<n;i++){const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.12;o.start(a.currentTime+i*.3);o.stop(a.currentTime+i*.3+.15)}}catch(e){}}
+const ICO={moon:'<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/>',sun:'<circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2" stroke="currentColor" stroke-width="2"/>',crown:'<path d="M3 18l-1-11 5 4 5-8 5 8 5-4-1 11z"/>',vote:'<path d="M4 14h16v6H4zM8 14l-2-8 12 0-2 8z"/>'};
+const svgi=(n,s=26)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="currentColor">${ICO[n]}</svg>`;
+
+/* ---------- art ---------- */
+(()=>{const w=[[22,60],[34,60],[70,44],[82,44],[70,58],[116,30],[128,30],[116,46],[160,52],[172,52],[210,38],[222,38],[210,54],[262,48],[274,48],[300,34],[312,34],[300,50],[352,56],[364,56]];
+$('#sky').innerHTML='<path class="bld" d="M0 130V70h20V50h28v20h14V28h34v42h18V56h26v30h18V40h32v48h18V60h28V36h30v34h16V56h30V30h28v50h14V62h30v68z"/><g class="win">'+w.map(([x,y])=>`<rect x="${x}" y="${y+14}" width="7" height="9"/>`).join('')+'</g>'})();
+const SK=['#f6d3ae','#e5b385','#c98f60','#8f5d3d','#fbe0c4'],L='stroke="#16101f" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"';
+function chr(role,h=0,st=''){
+  const sk=SK[h%5],C={mafia:'#2d2f4a',godfather:'#efe6d2',villager:'#6f9a4f',doctor:'#f4f7fa',detective:'#b98a52',vigilante:'#3a2a63',jester:'#8b3fa8'}[role];
+  const X={
+  mafia:[`<path d="M46 96l14 22 14-22z" fill="#fff" ${L}/><path d="M60 100l-6 8 6 30 6-30z" fill="#d12a45" ${L}/>`,`<ellipse cx="60" cy="40" rx="44" ry="9" fill="#17172a" ${L}/><path d="M30 40q2-28 30-28t30 28z" fill="#17172a" ${L}/><path d="M31 34q29 8 58 0" stroke="#d12a45" stroke-width="6" fill="none"/><rect x="38" y="52" width="20" height="14" rx="5" fill="#0b0b12" ${L}/><rect x="62" y="52" width="20" height="14" rx="5" fill="#0b0b12" ${L}/><path d="M58 58h4" ${L}/><path d="M84 46l-6 15" stroke="#c44" stroke-width="2.5" fill="none"/>`,1],
+  godfather:[`<path d="M46 96l14 22 14-22z" fill="#fff" ${L}/><path d="M52 100l8 4-8 4zM68 100l-8 4 8 4z" fill="#16101f"/><circle cx="86" cy="116" r="6" fill="#d12a45" ${L}/>`,`<ellipse cx="60" cy="40" rx="42" ry="9" fill="#3a3a44" ${L}/><path d="M30 40q2-28 30-28t30 28z" fill="#3a3a44" ${L}/><rect x="30" y="31" width="60" height="7" fill="#e0a93f" ${L}/><path d="M42 74q9-9 18-1q9-8 18 1q-9 8-18 3q-9 5-18-3z" fill="#16101f"/><rect x="74" y="80" width="24" height="6" rx="3" fill="#7a4a24" ${L}/><circle cx="99" cy="83" r="3.5" fill="#ff8a3d"/>`,0],
+  villager:[`<path d="M44 98v36M76 98v36" stroke="#3b5d9c" stroke-width="9"/>`,`<ellipse cx="60" cy="38" rx="47" ry="10" fill="#e6c35c" ${L}/><path d="M33 38q2-26 27-26t27 26z" fill="#f2d981" ${L}/><path d="M34 31q26 7 52 0" stroke="#d12a45" stroke-width="5" fill="none"/><circle cx="44" cy="68" r="1.5" fill="#8a5a3a"/><circle cx="50" cy="71" r="1.5" fill="#8a5a3a"/><circle cx="70" cy="71" r="1.5" fill="#8a5a3a"/><circle cx="76" cy="68" r="1.5" fill="#8a5a3a"/>`,1],
+  doctor:[`<path d="M46 96l14 20 14-20z" fill="#3cb7b0" ${L}/><path d="M42 98q-6 22 18 26 24-4 18-26" fill="none" stroke="#16101f" stroke-width="3"/><circle cx="60" cy="126" r="4" fill="#aab"/><path d="M84 116h8M88 112v8" stroke="#e0485a" stroke-width="3"/>`,`<path d="M29 44q2-32 31-32t31 32q-31-10-62 0z" fill="#e8f4ff" ${L}/><circle cx="60" cy="26" r="9" fill="#cfe8ff" ${L}/><circle cx="60" cy="26" r="3.5" fill="#fff"/><circle cx="48" cy="59" r="10" fill="none" ${L}/><circle cx="72" cy="59" r="10" fill="none" ${L}/><path d="M58 59h4" ${L}/>`,1],
+  detective:[`<path d="M38 96l22 20 22-20-5-10-17 12-17-12z" fill="#d6a86a" ${L}/><path d="M60 110l-4 6 4 18 4-18z" fill="#7a2a2a" ${L}/><g class="mag"><circle cx="98" cy="108" r="11" fill="#bfe6ff" fill-opacity=".55" ${L}/><path d="M90 116l-11 13" stroke="#5a3a1a" stroke-width="5" stroke-linecap="round"/></g>`,`<path d="M28 44q3-32 32-32t32 32z" fill="#8a6a3c" ${L}/><path d="M30 44q30 14 60 0" fill="#6f522b" ${L}/><path d="M60 12v30" stroke="#5a431f" stroke-width="2.5"/><path d="M40 49l16-4M80 49l-16-4" stroke="#16101f" stroke-width="4" stroke-linecap="round"/>`,2],
+  vigilante:[`<path d="M38 96q22 14 44 0v12q-22 14-44 0z" fill="#d12a45" ${L}/><path d="M78 106l14 22-9 2-10-18z" class="flap" fill="#d12a45" ${L}/><path d="M60 118l8 8-8 8-8-8z" fill="#ffd25e" ${L}/>`,`<path d="M24 70q-8-52 36-56q44 4 36 56q-6-26-36-26t-36 26z" fill="#3a2a63" ${L}/><path d="M32 52q28-8 56 0v14q-28 8-56 0z" fill="#16101f"/><ellipse class="glow" cx="48" cy="59" rx="7" ry="4" fill="#5ef0ff"/><ellipse class="glow" cx="72" cy="59" rx="7" ry="4" fill="#5ef0ff"/>`,3],
+  jester:[`<path d="M60 96c24 0 44 8 46 44H60z" fill="#f0b73a" ${L}/><path d="M38 96q4 10 10 0q4 10 12 0q4 10 12 0q4 10 10 0l-6 8h-34z" fill="#fff" ${L}/>`,`<path d="M30 42Q8 38 6 8Q32 12 50 32z" fill="#8b3fa8" ${L}/><path d="M90 42Q112 38 114 8Q88 12 70 32z" fill="#f0b73a" ${L}/><path d="M28 42q32-12 64 0v9q-32-10-64 0z" fill="#d12a45" ${L}/><circle class="bell" cx="6" cy="8" r="6" fill="#ffd25e" ${L}/><circle class="bell" cx="114" cy="8" r="6" fill="#ffd25e" ${L}/><path d="M83 66l5 7-5 7-5-7z" fill="#d12a45" ${L}/>`,4]}[role];
+  const eyes=st==='dead'?`<path d="M42 54l12 12M54 54l-12 12M66 54l12 12M78 54l-12 12" fill="none" ${L}/>`:st==='sleep'?`<path d="M41 61q7 6 14 0M65 61q7 6 14 0" fill="none" ${L}/>`:`<g class="eye"><ellipse cx="48" cy="59" rx="5.5" ry="7" fill="#fff"/><circle cx="49.5" cy="60" r="3.2" fill="#16101f"/></g><g class="eye"><ellipse cx="72" cy="59" rx="5.5" ry="7" fill="#fff"/><circle cx="73.5" cy="60" r="3.2" fill="#16101f"/></g>`;
+  const mouth=role==='jester'?`<path d="M44 74q16 20 32 0z" fill="#fff" ${L}/>`:role==='godfather'?'':role==='detective'?`<path d="M52 77h16" fill="none" ${L}/>`:role==='vigilante'?`<path d="M52 77q8 4 16-2" fill="none" ${L}/>`:`<path d="M50 75q10 9 20 0" fill="none" ${L}/>`;
+  return `<svg class="chr" viewBox="0 0 120 140"><g class="bob ${st==='dead'?'gone':st==='cheer'?'jump':''}"><rect x="50" y="84" width="20" height="16" fill="${sk}" ${L}/><path d="M12 140C14 104 36 96 60 96s46 8 48 44z" fill="${C}" ${L}/>${X[0]}<circle cx="29" cy="62" r="6" fill="${sk}" ${L}/><circle cx="91" cy="62" r="6" fill="${sk}" ${L}/><ellipse cx="60" cy="60" rx="31" ry="33" fill="${sk}" ${L}/><circle cx="40" cy="70" r="5" fill="#ff7a7a" opacity=".3"/><circle cx="80" cy="70" r="5" fill="#ff7a7a" opacity=".3"/>${role==='vigilante'?'':eyes}${mouth}${X[1]}${st==='dead'&&role==='vigilante'?eyes:''}</g></svg>`;
+}
+function pawn(id,dead){
+  const h=hue(id),sk=SK[h%5],c=`hsl(${h} 62% 52%)`,Q='stroke="#16101f" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
+  const hat=[`<path d="M12 28q18-28 36 0z" fill="${c}" ${Q}/><circle cx="30" cy="6" r="4" fill="#fff" ${Q}/>`,`<path d="M12 28q18-24 36 0z" fill="${c}" ${Q}/><path d="M30 28h22" stroke="${c}" stroke-width="5"/>`,`<path d="M10 28q2-24 20-24t20 24q-10-10-20-10t-20 10z" fill="#3b2a20" ${Q}/>`,`<path d="M12 30l4-20 8 10 6-14 6 14 8-10 4 20z" fill="#e8c14a" ${Q}/>`,`<path d="M11 28q0-24 19-24t19 24q-8-8-19-8t-19 8z" fill="${c}" ${Q}/>`][h%5];
+  const eyes=dead?`<path d="M20 30l6 6M26 30l-6 6M34 30l6 6M40 30l-6 6" ${Q} fill="none"/>`:`<circle cx="23" cy="34" r="3" fill="#16101f"/><circle cx="37" cy="34" r="3" fill="#16101f"/>`;
+  return `<svg class="pawn" viewBox="0 0 60 66"><path d="M6 66q2-18 24-18t24 18z" fill="${c}" ${Q}/><circle cx="30" cy="32" r="19" fill="${sk}" ${Q}/>${eyes}<path d="M25 42q5 4 10 0" fill="none" ${Q}/>${hat}</svg>`;
+}
+function table(list,o={}){
+  const n=list.length||1,sz=n>11?40:n>8?46:54;
+  return `<div class="tbl" style="--sz:${sz}px"><div class="felt">${o.center||''}</div>${list.map((p,i)=>{const a=-Math.PI/2+i*2*Math.PI/n,x=50+42*Math.cos(a),y=50+42*Math.sin(a),dead=p.alive===false,can=o.act&&!dead&&!(o.not&&o.not===p.id),r=o.roles&&p.role&&R[p.role],c=o.cnt&&o.cnt[p.id],tg=can?'button':'div';
+  return `<${tg} class="seat ${o.sel===p.id?'sel':''} ${dead?'dead':''} ${p.id===me?'me':''}" style="left:${x}%;top:${y}%;--i:${i}" ${can?`data-act="${o.act}" data-v="${p.id}"`:''}>${pawn(p.id,dead)}<span>${esc(p.name)}</span>${r?`<i>${r[0]}</i>`:''}${c?`<em>${c}</em>`:''}${p.id===o.host?`<svg viewBox="0 0 24 24" width="16" height="16" fill="#e0a93f" style="position:absolute;top:-10px;left:6px">${ICO.crown}</svg>`:''}</${tg}>`}).join('')}</div>`;
+}
+/* ---------- host game engine ---------- */
+async function put(p){Object.assign(S,p);try{await ref().set(S)}catch(e){}}
+const go=async f=>{busy=true;try{await f()}finally{busy=false}};
+const nm=id=>(S.players.find(p=>p.id===id)||{name:'?'}).name;
+const rn=r=>S.mode==='paranoia'?'':` (${R[r][0]})`;
+const dsec=()=>S.mode==='speed'?Math.min(S.secs,60):S.secs;
+function tick(){
+  if(busy||!S||!isHost)return;const t=now(),ph=S.phase;
+  const done=()=>alive().every(p=>(ph==='trial'&&p.id===S.accused)||(P[p.id]&&P[p.id].act&&P[p.id].act.k===key()));
+  if(ph==='reveal'&&t>S.ends)go(startNight);
+  else if(ph==='night'&&(t>S.ends||done()))go(resolveNight);
+  else if(ph==='dawn'&&t>S.ends)go(()=>S.winner?put({phase:'over'}):put({phase:'day',ends:now()+dsec()*1000,dur:dsec()*1000}).then(()=>say('Day breaks. Discuss and find the Mafia.')));
+  else if(ph==='day'&&t>S.ends)go(startVote);
+  else if(ph==='vote'&&(t>S.ends||done()))go(resolveVote);
+  else if(ph==='trial'&&(t>S.ends||done()))go(resolveTrial);
+  else if(ph==='result'&&t>S.ends)go(()=>S.winner?put({phase:'over'}):startNight());
+}
+async function startGame(){
+  const ids=Object.keys(P),n=ids.length,o=S.opts,chaos=S.mode==='chaos';
+  const mc=S.mode==='outbreak'?1:n>=11?3:n>=7?2:1,roles=Array(mc).fill('mafia');
+  ROLEOPT.forEach(([k])=>{if(roles.length<n-1&&(chaos?Math.random()<.55:o[k]))roles.push(k)});
+  while(roles.length<n)roles.push('villager');
+  const gi=roles.indexOf('godfather');if(gi>-1){const mi=roles.indexOf('mafia');if(mi>-1){roles[mi]='godfather';roles[gi]='mafia'}}
+  for(let i=roles.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[roles[i],roles[j]]=[roles[j],roles[i]]}
+  ids.sort(()=>Math.random()-.5);
+  await put({g:S.g+1,round:0,phase:'reveal',players:ids.map((id,i)=>({id,name:P[id].name,role:roles[i],alive:true})),mayor:S.mode==='mayor'?ids[0]:null,turned:[],infected:null,accused:null,log:[],det:{},used:{},dawn:[],tally:null,winner:null,out:null,ends:now()+20000,dur:20000});
+  say('The roles have been dealt. Check your phones.');
+}
+async function startNight(){const r=S.round+1,d=S.mode==='speed'?25000:45000;await put({phase:'night',round:r,ends:now()+d,dur:d});say(`Night ${r} falls. Everyone, close your eyes.`)}
+async function resolveNight(){
+  const k=key(),pl=S.players,acts=id=>{const a=P[id]&&P[id].act;return a&&a.k===k?a.t:null};
+  const al=pl.filter(p=>p.alive),tally={};
+  al.filter(isM).forEach(p=>{const t=acts(p.id);if(t)tally[t]=(tally[t]||0)+1});
+  const ks=Object.keys(tally),best=Math.max(0,...ks.map(x=>tally[x])),top=ks.filter(x=>tally[x]===best);
+  const kill=top.length?top[Math.floor(Math.random()*top.length)]:null;
+  const doc=al.find(p=>p.role==='doctor'),save=doc?acts(doc.id):null;
+  const vg=al.find(p=>p.role==='vigilante'),vt=vg&&!S.used[vg.id]?acts(vg.id):null,used={...S.used};if(vt)used[vg.id]=1;
+  const det={...S.det},dt=al.find(p=>p.role==='detective');
+  if(dt){const t=acts(dt.id);if(t){const tp=pl.find(p=>p.id===t);det[dt.id]=[...(det[dt.id]||[]),`Night ${S.round}: ${tp.name} is ${tp.role==='mafia'?'Mafia':'not Mafia'}.`]}}
+  const log=[...S.log,'Night '+S.round],dead=[];
+  [[S.mode==='outbreak'?null:kill,'the Mafia'],[vt,'the Vigilante']].forEach(([t,by])=>{if(!t)return;if(t===save){log.push(`${nm(t)} was attacked by ${by}, but the Doctor saved them.`);return}if(!dead.includes(t)){dead.push(t);const p=pl.find(x=>x.id===t);log.push(`${p.name}${rn(p.role)} was killed by ${by}.`)}});
+  if(!dead.length)log.push('No one died.');
+  let turned=S.turned||[];
+  const inf=S.mode==='outbreak'&&kill&&kill!==save&&!isM(pl.find(p=>p.id===kill))?kill:null;
+  if(inf){turned=[...turned,inf];log.push(`${nm(inf)}${rn(pl.find(p=>p.id===inf).role)} was infected and joined the Mafia.`)}
+  else if(S.mode==='outbreak'&&kill&&kill===save)log.push(`${nm(kill)} was targeted for infection, but the Doctor saved them.`);
+  const players=pl.map(p=>dead.includes(p.id)?{...p,alive:false}:p.id===inf?{...p,role:'mafia'}:p);
+  await put({players,log,det,used,turned,infected:inf,dawn:dead,winner:winOf(players),phase:'dawn',ends:now()+9000,dur:9000});
+  say(dead.length?dead.map(nm).join(' and ')+' did not survive the night.':'Everyone survived the night.');
+}
+async function startVote(){const d=S.mode==='speed'?25000:50000;await put({phase:'vote',ends:now()+d,dur:d});say('Time to vote.')}
+async function resolveVote(){
+  const k=key(),votes={},cnt={};
+  alive().forEach(p=>{const a=P[p.id]&&P[p.id].act;if(a&&a.k===k&&a.t){votes[p.id]=a.t;cnt[a.t]=(cnt[a.t]||0)+(p.id===S.mayor?2:1)}});
+  const ids=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]),tie=ids.length>1&&cnt[ids[0]]===cnt[ids[1]],out=ids.length&&!tie?ids[0]:null;
+  if(S.mode==='courtroom'&&out){await put({phase:'trial',accused:out,tally:{cnt,votes},ends:now()+35000,dur:35000,log:[...S.log,'Day '+S.round+' vote',`${nm(out)} was put on trial.`]});say(nm(out)+' is on trial. Defend yourself.');return}
+  const log=[...S.log,'Day '+S.round+' vote',ids.length?ids.map(i=>`${nm(i)}: ${cnt[i]}`).join(', '):'Everyone skipped.'];
+  let players=S.players,w=null;
+  if(out){const o=players.find(p=>p.id===out);players=players.map(p=>p.id===out?{...p,alive:false}:p);log.push(`${o.name}${rn(o.role)} was voted out.`);if(o.role==='jester')w='jester'}else log.push('No one was eliminated.');
+  await put({players,log,winner:w||winOf(players),out,tally:{cnt,votes},phase:'result',ends:now()+10000,dur:10000});
+  say(out?nm(out)+' was voted out.':'No one was eliminated.');
+}
+
+
+async function resolveTrial(){
+  const k=key(),acc=S.accused;let g=0,i=0;
+  alive().forEach(p=>{if(p.id===acc)return;const a=P[p.id]&&P[p.id].act;if(a&&a.k===k){if(a.t==='g')g++;else if(a.t==='i')i++}});
+  const guilty=g>i,log=[...S.log,`Trial: ${g} guilty, ${i} innocent.`];
+  let players=S.players,w=null,out=null;
+  if(guilty){out=acc;const o=players.find(p=>p.id===acc);players=players.map(p=>p.id===acc?{...p,alive:false}:p);log.push(`${o.name}${rn(o.role)} was found guilty and eliminated.`);if(o.role==='jester')w='jester'}else log.push(`${nm(acc)} was found innocent.`);
+  await put({players,log,winner:w||winOf(players),out,tally:{cnt:{},votes:{},g,i},phase:'result',ends:now()+10000,dur:10000});
+  say(guilty?nm(acc)+' was found guilty.':nm(acc)+' was found innocent.');
+}
+
+
+/* ---------- standalone backend (replaces Claude's db) ---------- */
+function uid(){let u=null;try{u=localStorage.getItem('mafia-uid')}catch(e){}if(!u){u=Array.from({length:20},()=>'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random()*36)]).join('');try{localStorage.setItem('mafia-uid',u)}catch(e){}}return u}
+function makeDb(){
+  const U=uid();
+  const post=async(op,path,data)=>{const r=await fetch('/api/'+op,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,data,uid:U})});if(!r.ok)throw new Error('http '+r.status);return r.json()};
+  const snap=(id,v)=>({id,exists:v!=null,data:()=>v==null?undefined:v});
+  const doc=path=>{const id=path.split('/').pop();return{id,path,
+    async get(){const r=await fetch('/api/get?path='+encodeURIComponent(path));if(!r.ok)throw new Error('http '+r.status);return snap(id,(await r.json()).data)},
+    set:d=>post('set',path,d).then(()=>{}),update:d=>post('update',path,d).then(()=>{}),
+    onSnapshot(next){const es=new EventSource('/api/sub?path='+encodeURIComponent(path));es.onmessage=e=>next(snap(id,JSON.parse(e.data).data));return()=>es.close()}}};
+  const collection=path=>({onSnapshot(next){const es=new EventSource('/api/sub?col=1&path='+encodeURIComponent(path));es.onmessage=e=>{const m=JSON.parse(e.data).docs;next({docs:Object.keys(m).map(id=>snap(id,m[id]))})};return()=>es.close()}});
+  return{doc,collection};
+}
+
+/* ---------- connection ---------- */
+document.head.insertAdjacentHTML('beforeend','<style>.t-mafia{color:var(--bad)}.t-town{color:var(--good)}.t-solo{color:var(--accent)}</style>');
+async function init(){
+  db=makeDb();me=uid();
+  let r=null;try{r=JSON.parse(localStorage.getItem('mafia-room')||'null')}catch(e){}
+  const inv=new URLSearchParams(location.search).get('room');
+  if(db&&me&&r&&r.code&&myName&&!inv)enter(r.code,myName,false,true);else{if(inv)page='play';menu()}
+}
+async function enter(c,name,create,quiet){
+  if(!name)return toast('Enter your name first');
+  code=c;myName=name;
+  try{
+    if(create){isHost=true;S={code,host:me,theme,mode:'classic',secs:120,opts:{doctor:true,detective:true,vigilante:false,jester:false,godfather:false,voice:false},phase:'lobby',g:0,round:0,players:[],log:[],det:{},used:{},dawn:[],tally:null,winner:null,ends:0,dur:1};await ref().set(S)}
+    else{const s=await ref().get();if(!s.exists){code=null;if(!quiet)toast('No room with that code');page='play';return menu()}S=JSON.parse(JSON.stringify(s.data()));isHost=S.host===me;if(S.phase!=='lobby'&&!S.players.some(p=>p.id===me)){code=null;toast('That game already started');page='play';return menu()}}
+    const ex=await pref(me).get();
+    if(ex.exists)await pref(me).update({name});else await pref(me).set({name,act:null,sus:null,react:null});
+  }catch(e){code=null;toast('Could not join. Check your connection and try again.');page='play';return menu()}
+  try{localStorage.setItem('mafia-name',name);localStorage.setItem('mafia-room',JSON.stringify({code}))}catch(e){}
+  unsubs=[ref().onSnapshot(s=>{if(s.exists){S=JSON.parse(JSON.stringify(s.data()));render()}}),db.collection('rooms/'+code+'/p').onSnapshot(q=>{const n={};q.docs.forEach(d=>n[d.id]=d.data());reacts(n);P=n;render()})];
+  if(isHost)tickT=setInterval(tick,1000);
+  uiT=setInterval(clock,250);
+}
+function leave(){unsubs.forEach(u=>u());unsubs=[];clearInterval(tickT);clearInterval(uiT);S=null;P={};code=null;isHost=false;page='title';try{localStorage.removeItem('mafia-room')}catch(e){}menu()}
+function reacts(n){Object.keys(n).forEach(id=>{const r=n[id].react;if(r&&r.ts!==lastR[id]){if(lastR[id]!==undefined&&now()-r.ts<6000){const d=document.createElement('div');d.className='fl';d.style.left=(8+Math.random()*60)+'%';d.textContent=r.e;document.body.appendChild(d);setTimeout(()=>d.remove(),3000)}lastR[id]=r.ts}else if(lastR[id]===undefined)lastR[id]=r?r.ts:0})}
+
+/* ---------- menu pages ---------- */
+const HOW=[['mafia','Secret roles','Everyone gets a secret role on their own phone. A few players are the Mafia. Everyone else is the town.'],['detective','Night','Each night, everyone picks a player in secret. The Mafia choose a victim. The Doctor and Detective use their powers.'],['doctor','Dawn','Morning comes and you learn who did not survive. Anyone who dies has their role revealed.'],['villager','Day','Talk it out loud. Point at suspects, defend yourself, bluff. Anyone might be lying.'],['jester','Vote','Everyone votes on who to eliminate. The most votes goes down and their role is revealed. A tie means no one leaves.'],['godfather','Winning','Town wins when every Mafia is gone. Mafia win when they equal everyone else. The Jester wins alone if voted out.']];
+const back=`<button class="btn sm back" data-act="nav" data-v="title">Back</button>`;
+function menu(){
+  const T=document.documentElement;T.dataset.theme=theme;T.dataset.phase='night';
+  const ok=db&&me;let h='';
+  if(page==='title')h=`<div class="page"><div class="logo"><span>MAFIA</span><span>NIGHT</span></div><div class="stage">${['detective','mafia','jester','doctor'].map((r,i)=>`<div style="animation-delay:${i*.18}s">${chr(r,i+1)}</div>`).join('')}</div><div class="menu" style="margin-top:14px"><button class="btn main" data-act="nav" data-v="play">Play</button><div class="row" style="margin:0"><button class="btn" data-act="nav" data-v="how">How to play</button><button class="btn" data-act="nav" data-v="chars">Characters</button></div><div class="row" style="margin:0"><button class="btn" data-act="nav" data-v="modes">Game modes</button><button class="btn" data-act="nav" data-v="set">Settings</button></div></div></div>`;
+  else if(page==='play')h=`<div class="page">${back}<h1>Play</h1><p class="sub">Create a room, or join a friend's with their code.</p><div class="panel"><input id="nm" maxlength="12" placeholder="Your name" autocomplete="off" value="${esc(myName)}"><button class="btn main" style="margin-top:12px" data-act="create" ${ok?'':'disabled'}>Create a room</button></div><div class="panel"><div class="row" style="margin:0"><input id="cd" class="code" maxlength="4" placeholder="CODE" autocomplete="off" value="${esc((new URLSearchParams(location.search).get('room')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4))}"><button class="btn" style="flex:0 0 auto" data-act="join" ${ok?'':'disabled'}>Join</button></div></div></div>`;
+  else if(page==='how'){const s=HOW[how];h=`<div class="page">${back}<h1>How to play</h1><div class="panel c"><div class="hero">${chr(s[0],how+1)}</div><h2 style="margin-top:6px">${s[1]}</h2><p>${s[2]}</p></div><div class="dots">${HOW.map((_,i)=>`<i class="${i===how?'on':''}"></i>`).join('')}</div><div class="row"><button class="btn" data-act="hstep" data-v="-1" ${how?'':'disabled'}>Previous</button><button class="btn main" style="flex:1" data-act="hstep" data-v="1">${how===HOW.length-1?'Done':'Next'}</button></div></div>`}
+  else if(page==='modes')h=`<div class="page">${back}<h1>Game modes</h1><p class="sub">Every mode changes the rules, not just the roles.</p>${Object.keys(MI).map(k=>`<div class="panel"><div class="row" style="align-items:center;margin:0"><div style="width:84px;flex:none">${chr(MI[k][1],1)}</div><div><h3 style="margin:0">${MI[k][0]}</h3><p class="sub" style="margin:2px 0 0">${MI[k][2]} ${MI[k][4]}+ players.</p></div></div><ul class="rules">${MI[k][3].map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}</div>`;
+  else if(page==='chars'){const r=R[csel];h=`<div class="page">${back}<h1>Characters</h1><div class="panel c"><div class="hero">${chr(csel,1)}</div><span class="tag ${r[2]}">${TEAM[r[2]]}</span><h1 style="margin-top:8px">${r[0]}</h1><p>${r[3]}</p><p class="sub">Tip: ${r[4]}</p></div><div class="gal">${Object.keys(R).map((k,i)=>`<button data-act="cpick" data-v="${k}" aria-pressed="${k===csel}">${chr(k,i)}${R[k][0]}</button>`).join('')}</div></div>`}
+  else h=`<div class="page">${back}<h1>Settings</h1><div class="panel"><b>Your name</b><input id="nm" maxlength="12" placeholder="Your name" autocomplete="off" value="${esc(myName)}" style="margin-top:8px;width:100%"></div><div class="panel"><button class="tog" data-act="snd" aria-pressed="${snd}"><span>Sound effects</span><i></i></button></div></div>`;
+  app.innerHTML=h;
+}
+
+/* ---------- game views ---------- */
+function render(){
+  if(!S||!code)return;
+  const T=document.documentElement;T.dataset.theme='noir';const ph=S.phase;
+  T.dataset.phase=(['dawn','day','vote','trial','result'].includes(ph)||(ph==='over'&&S.winner!=='mafia'))?'day':'night';
+  const my=S.players.find(p=>p.id===me),dead=ph!=='lobby'&&(!my||!my.alive),rl=my&&R[my.role];
+  const labels={lobby:'Lobby',reveal:'Your role',night:'Night '+S.round,dawn:'Dawn',day:'Day '+S.round,vote:'Vote',result:'Verdict',trial:'Trial',over:'Game over'};
+  const timer=l=>`<div class="timer"><span>${l}</span><span id="tm"></span></div><div class="bar"><i id="tb"></i></div>`;
+  const ctr=(i,t,s='')=>`${svgi(i,34)}<b>${t}</b><small>${s}</small>`;
+  const par=S.mode==='paranoia',hr=r=>par?'villager':r,tg=r=>par?'':`<span class="tag ${R[r][2]}">${R[r][0]}</span>`;
+  const pk=ph+S.round+(dead?'d':''),pg=pk!==lastPk?'page':'';lastPk=pk;
+  const n=k=>alive().filter(p=>P[p.id]&&P[p.id].act&&P[p.id].act.k===k).length;
+  const trn=S.turned&&S.turned.includes(me)?`<div class="panel intel"><b>You were infected</b><p style="margin:4px 0 0">You are Mafia now. Help them win.</p></div>`:'';
+  const intel=trn+(my&&S.det[me]?`<div class="panel intel"><b>Your intel</b>${S.det[me].map(x=>`<p style="margin:4px 0 0">${esc(x)}</p>`).join('')}</div>`:'');
+  const act2=(l,dis)=>`<div class="row"><button class="btn" data-act="lock" data-v="skip">Skip</button><button class="btn main" style="flex:2" data-act="lock" ${dis?'disabled':''}>${l}</button></div>`;
+  let h=`<div class="${pg}"><div class="top"><span class="pill">Room <b>${esc(S.code)}</b></span><span class="pill">${labels[ph]}</span>${ph!=='lobby'&&rl?`<span class="pill t-${rl[2]}"><span class="hd">${chr(my.role,hue(me))}</span>${rl[0]}</span>`:''}${S.mayor?`<span class="pill">Mayor ${esc(nm(S.mayor))}</span>`:''}</div>`;
+  if(ph==='lobby'){
+    const list=Object.keys(P).map(id=>({id,name:P[id].name}));
+    h+=`${table(list,{host:S.host,center:`<small>Room code</small><b>${esc(S.code)}</b><small>${list.length} at the table</small>`})}`;
+    h+=`<h2>Game mode</h2>${isHost?`<div class="car">${Object.keys(MI).map(k=>`<button class="mc ${S.mode===k?'on':''}" data-act="set" data-k="mode" data-v="${k}"><div class="mchr">${chr(MI[k][1],1)}</div><b>${MI[k][0]}</b><small>${MI[k][2]}</small></button>`).join('')}</div>`:''}<div class="panel"><div class="row" style="align-items:center;margin:0"><div style="width:90px;flex:none">${chr(MI[S.mode][1],1)}</div><div><h3 style="margin:0">${MI[S.mode][0]}</h3><p class="sub" style="margin:2px 0 0">${MI[S.mode][2]}</p></div></div><ul class="rules">${MI[S.mode][3].map(x=>`<li>${x}</li>`).join('')}</ul></div>`;
+    if(isHost){
+      const minP=MI[S.mode][4];
+      h+=`<div class="panel">${S.mode==='chaos'?'':`<b>Roles in play</b><div class="gal" style="margin:10px 0 16px">${ROLEOPT.map(([k,l])=>`<button data-act="opt" data-v="${k}" aria-pressed="${!!S.opts[k]}">${chr(k,1)}${l}</button>`).join('')}</div>`}
+      <b>Discussion time</b><div class="seg" style="margin:8px 0 16px">${[60,120,180,300].map(s=>`<button data-act="secs" data-v="${s}" aria-pressed="${S.secs===s}">${s/60} min</button>`).join('')}</div>
+      <button class="tog" data-act="opt" data-v="voice" aria-pressed="${!!S.opts.voice}"><span>Narrator voice on this phone</span><i></i></button></div>
+      <button class="btn main" data-act="start" ${list.length<minP?'disabled':''}>${list.length<minP?`Need at least ${minP} players`:'Deal the roles'}</button>`;
+    }else h+=`<div class="panel c"><p style="margin:0">Waiting for the host to start the game.</p></div>`;
+    h+=`<div class="row"><button class="btn" data-act="invite">Share invite link</button></div><p class="c" style="margin-top:14px"><button class="btn sm" data-act="leave">Leave room</button></p>`;
+  }else if(ph==='reveal'){
+    h+=timer('Game starts soon')+(my?`<div class="rc ${peek?'on':''}" data-act="peek" role="button" tabindex="0"><div><div class="f"><b>M</b><h3 style="color:#fff;text-shadow:0 2px 0 #000">Tap to reveal</h3></div><div class="b"><span class="tag ${rl[2]}">${TEAM[rl[2]]}</span>${chr(my.role,hue(me))}<h1 class="t-${rl[2]}">${rl[0]}</h1><p>${rl[3]}</p>${isM(my)?`<p>Team: <b>${S.players.filter(p=>isM(p)&&p!==my).map(p=>esc(p.name)).join(', ')||'none, you are alone'}</b></p>`:''}</div></div></div><p class="sub c">Shield your screen. Tap the card again to hide it.</p>`:'<p class="c">You joined late. Watch this round.</p>');
+  }else if(ph==='night'){
+    const k=key();if(selKey!==k){selKey=k;sel=null}const a=myAct();
+    h+=timer('Night ends');
+    if(dead)h+=`${table(S.players,{roles:1,center:ctr('moon','Night '+S.round,n(k)+'/'+alive().length+' acted')})}<p class="sub c">You are out. Watch quietly.</p>`;
+    else if(a)h+=`<div class="panel c"><div class="hero">${chr(my.role,hue(me),'sleep')}</div><h2>Locked in</h2><p class="sub">Waiting for others (${n(k)}/${alive().length}).</p></div>${intel}`;
+    else{
+      const mates=isM(my)?S.players.filter(p=>isM(p)&&p.alive&&p!==my&&P[p.id]&&P[p.id].act&&P[p.id].act.k===k).map(p=>`${esc(p.name)} chose ${esc(nm(P[p.id].act.t)||'nobody')}`):[];
+      h+=`<h2 style="margin-top:12px">${HINT[my.role]}</h2><p class="sub">Everyone picks something, so nobody can tell who has a power.</p>${isM(my)?`<p class="sub">Mafia team: ${S.players.filter(p=>isM(p)&&p.alive).map(p=>esc(p.name)).join(', ')}. ${mates.join('. ')}${mates.length?'.':''}</p>`:''}${intel}${table(alive(),{act:'sel',sel,center:ctr('moon','Night '+S.round)})}${act2('Confirm',!sel)}`;
+    }
+  }else if(ph==='dawn'){
+    h+=`<div class="c" style="padding-top:8px"><p class="sub">The sun rises</p>${S.dawn.length?`<div class="stage">${S.dawn.map(id=>{const p=S.players.find(x=>x.id===id);return `<div style="width:42%">${chr(hr(p.role),hue(id),'dead')}<h2 class="t-mafia">${esc(p.name)}</h2>${tg(p.role)}</div>`}).join('')}</div><p style="margin-top:14px">did not survive the night.</p>`:`<div class="t-solo" style="margin:10px 0">${svgi('sun',90)}</div><h1 class="big">No one died</h1><p>The night was quiet.</p>`}</div>${intel}`;
+  }else if(ph==='day'){
+    const cnt={};Object.keys(P).forEach(id=>{const s=P[id].sus;if(s&&S.players.find(p=>p.id===id&&p.alive))cnt[s]=(cnt[s]||0)+1});
+    h+=timer('Discussion')+`<p class="sub" style="margin-top:10px">Talk it out loud. Tap a player to point at them.</p>${intel}${table(S.players,{host:S.mayor,roles:dead,cnt,act:dead?'':'sus',sel:P[me]&&P[me].sus,center:ctr('sun','Day '+S.round,alive().length+' alive')})}<div class="react">${BUBBLES.map(e=>`<button class="bub" data-act="emo" data-v="${e}">${e}</button>`).join('')}</div>`;
+    if(isHost)h+=`<div class="row"><button class="btn" data-act="more">+30 sec</button><button class="btn" data-act="tovote">Skip to vote</button></div>`;
+  }else if(ph==='vote'){
+    const k=key();if(selKey!==k){selKey=k;sel=null}const a=myAct();
+    h+=timer('Voting closes');
+    if(dead)h+=`${table(S.players,{roles:1,center:ctr('vote','Voting',n(k)+'/'+alive().length+' voted')})}`;
+    else if(a)h+=`<div class="panel c"><div class="hero">${chr(my.role,hue(me))}</div><h2>Vote cast</h2><p class="sub">Waiting for others (${n(k)}/${alive().length}).</p></div>`;
+    else h+=`<h2 style="margin-top:12px">Who goes?</h2><p class="sub">Pick a player to eliminate, or skip.</p>${table(alive(),{host:S.mayor,act:'sel',sel,not:me,center:ctr('vote','Vote')})}${act2('Cast vote',!sel)}`;
+  }else if(ph==='trial'){
+    const k=key();if(selKey!==k){selKey=k;sel=null}const a=myAct(),acc=S.players.find(p=>p.id===S.accused),nn=alive().filter(p=>p.id!==S.accused&&P[p.id]&&P[p.id].act&&P[p.id].act.k===k).length;
+    h+=timer('Defense and verdict')+`<div class="panel c" style="margin-top:12px"><span class="tag solo">On trial</span><div style="--sz:150px;display:flex;justify-content:center;margin:8px 0">${pawn(acc.id)}</div><h2 style="margin-top:0">${esc(acc.name)}</h2><p class="sub">Defend yourself out loud. Then the town votes.</p></div>`+(dead?`<p class="sub c">Votes in: ${nn}</p>`:S.accused===me?`<p class="sub c">You are on trial. Votes in: ${nn}/${alive().length-1}</p>`:a?`<div class="panel c"><h2 style="margin:0">Verdict locked</h2><p class="sub" style="margin:4px 0 0">Waiting (${nn}/${alive().length-1}).</p></div>`:`<div class="row"><button class="btn" data-act="verdict" data-v="i">Innocent</button><button class="btn main" style="flex:1" data-act="verdict" data-v="g">Guilty</button></div>`);
+  }else if(ph==='result'){
+    const o=S.out&&S.players.find(p=>p.id===S.out);
+    h+=`<div class="c" style="padding-top:8px">${o?`<div class="hero">${chr(hr(o.role),hue(o.id),'dead')}</div><h1 class="big t-mafia">${esc(o.name)}</h1>${tg(o.role)}<p style="margin-top:10px">was voted out.</p>`:`<div class="t-solo" style="margin:10px 0">${svgi('vote',80)}</div><h1 class="big">${S.tally.g!==undefined?'Innocent':'No verdict'}</h1><p>${S.tally.g!==undefined?'The town spared them.':'A tie or no votes. No one is eliminated.'}</p>`}</div><div class="panel"><b>${S.tally.g!==undefined?'Verdict':'Ballots'}</b>${S.tally.g!==undefined?`<p style="margin:6px 0 0">Guilty ${S.tally.g}, Innocent ${S.tally.i}.</p>`:par?'<p class="sub" style="margin:6px 0 0">Ballots are secret in Paranoia.</p>':`<ul class="list">${Object.keys(S.tally.votes).map(v=>`<li><span>${esc(nm(v))}</span><span>voted ${esc(nm(S.tally.votes[v]))}</span></li>`).join('')||'<li>Everyone skipped.</li>'}</ul>`}</div>`;
+  }else if(ph==='over'){
+    const wins=p=>S.winner==='town'?(!isM(p)&&p.role!=='jester'):S.winner==='mafia'?isM(p):p.role==='jester';
+    const w={town:['The town wins','t-town'],mafia:['The Mafia wins','t-mafia'],jester:['The Jester wins','t-solo']}[S.winner];
+    h+=`<div class="c" style="padding-top:8px"><h1 class="big ${w[1]}">${w[0]}</h1></div><div class="panel"><div class="grid3">${S.players.map(p=>`<div>${chr(p.role,hue(p.id),wins(p)?'cheer':p.alive?'':'dead')}<div>${esc(p.name)}</div><span class="tag ${R[p.role][2]}">${R[p.role][0]}</span></div>`).join('')}</div></div><h2>Recap</h2><div class="panel"><ul class="list log">${S.log.map(l=>`<li class="${/^(Night|Day) \d+/.test(l)?'h':''}">${esc(l)}</li>`).join('')}</ul></div>${isHost?'<button class="btn main" data-act="rematch">Rematch in the same room</button>':'<p class="sub c">The host can start a rematch.</p>'}<p class="c" style="margin-top:14px"><button class="btn sm" data-act="leave">Leave room</button></p>`;
+  }
+  const sc=$('.car'),sl=sc?sc.scrollLeft:0;
+  app.innerHTML=h+'</div>';const c2=$('.car');if(c2)c2.scrollLeft=sl;clock();fx(ph);
+}
+function clock(){
+  if(!S||!$('#tm'))return;const left=Math.max(0,S.ends-now());
+  $('#tm').textContent=Math.ceil(left/1000)+'s';$('#tb').style.width=Math.min(100,left/S.dur*100)+'%';const bb=$('.bar');if(bb)bb.classList.toggle('hot',left<10000&&left>0);
+  if(S.phase==='day'&&Math.ceil(left/1000)===10&&!clock.b){clock.b=1;beep(1)}if(left>11000)clock.b=0;
+}
+
+/* ---------- actions ---------- */
+const w=async f=>{try{await f()}catch(e){toast('Could not save. Check your connection.')}};
+const A={
+  nav(v){page=v;if(v==='how')how=0;menu()},
+  hstep(v){how+=+v;if(how>=HOW.length){page='title';how=0}menu()},
+  cpick(v){csel=v;menu()},
+  theme(v){theme=v;try{localStorage.setItem('mafia-theme',v)}catch(e){}menu()},
+  snd(){snd=!snd;try{localStorage.setItem('mafia-snd',snd?'1':'0')}catch(e){}menu()},
+  create(){const c=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)]).join('');enter(c,$('#nm').value.trim(),true)},
+  join(){const c=$('#cd').value.trim().toUpperCase();if(c.length!==4)return toast('Enter the 4-letter code');enter(c,$('#nm').value.trim(),false)},
+  set(v,el){w(()=>put({[el.dataset.k]:v}))},
+  opt(v){w(()=>put({opts:{...S.opts,[v]:!S.opts[v]}}))},
+  secs(v){w(()=>put({secs:+v}))},
+  start(){go(startGame)},
+  peek(){peek=!peek;render()},
+  sel(v){sel=sel===v?null:v;render()},
+  lock(v){const t=v==='skip'?null:sel;w(()=>pref(me).update({act:{k:key(),t}}))},
+  sus(v){const cur=P[me]&&P[me].sus;w(()=>pref(me).update({sus:cur===v?null:v}))},
+  emo(v){w(()=>pref(me).update({react:{e:v,ts:now()}}))},
+  more(){w(()=>put({ends:S.ends+30000,dur:S.dur+30000}))},
+  tovote(){go(startVote)},
+  rematch(){w(()=>put({phase:'lobby',players:[],winner:null,round:0}))},
+  verdict(v){w(()=>pref(me).update({act:{k:key(),t:v}}))},
+  invite(){const u=location.origin+location.pathname+'?room='+S.code;if(navigator.share)navigator.share({title:'Mafia Night',text:'Join my Mafia game, room '+S.code,url:u}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>toast('Invite link copied'),()=>toast(u));else toast(u)},
+  leave
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&!b.disabled&&A[b.dataset.act])A[b.dataset.act](b.dataset.v,b)});
+document.addEventListener('input',e=>{if(e.target.id==='nm'){myName=e.target.value.trim();try{localStorage.setItem('mafia-name',myName)}catch(x){}}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList.contains('rc'))A.peek()});
+
+/* ---------- effects ---------- */
+let lastFx='',lastPk='';
+function confetti(cols){for(let i=0;i<70;i++){const d=document.createElement('div');d.className='cf';d.style.cssText=`left:${Math.random()*100}%;background:${cols[i%cols.length]};animation-delay:${Math.random()*1.2}s;animation-duration:${2.6+Math.random()*1.8}s`;document.body.appendChild(d);setTimeout(()=>d.remove(),6500)}}
+function fx(ph){
+  const k=S.g+':'+S.round+':'+ph;if(k===lastFx)return;lastFx=k;
+  const m={reveal:['Roles dealt','moon'],night:['Night '+S.round,'moon'],dawn:[S.dawn.length?'Blood at dawn':'A quiet dawn','sun'],day:['Day '+S.round,'sun'],vote:['Time to vote','vote'],trial:['Trial','vote'],over:[{town:'Town wins',mafia:'Mafia wins',jester:'Jester wins'}[S.winner]||'Game over','crown']}[ph];
+  if(!m)return;
+  const d=document.createElement('div');d.className='splash';d.innerHTML=`${ph==='dawn'&&S.dawn.length?'<div class="slash"></div>':''}<div class="t-solo">${svgi(m[1],70)}</div><h1 class="big">${m[0]}</h1>`;document.body.appendChild(d);setTimeout(()=>d.remove(),1900);
+  if(ph==='over')confetti(S.winner==='mafia'?['#ff3b5c','#8c1d2c','#555']:['#e0a93f','#19f0d0','#fff','#ff2e93']);
+}
+function ambient(){
+  const mk=(c,h)=>{const d=document.createElement('div');d.className=c;d.innerHTML=h;document.body.appendChild(d);return d};
+  mk('beams','<i style="left:6%"></i><i style="left:60%;animation-delay:-4.5s"></i>');
+  mk('stars',Array.from({length:40},()=>`<i style="left:${Math.random()*100}%;top:${Math.random()*55}%;animation-delay:-${Math.random()*3}s;scale:${.5+Math.random()}"></i>`).join(''));
+  mk('clouds',[0,1,2].map(i=>`<i style="top:${8+i*12}%;animation-duration:${60+i*25}s;animation-delay:-${i*20}s"></i>`).join(''));
+  mk('embers',Array.from({length:24},()=>`<i style="left:${Math.random()*100}%;--s:${2+Math.random()*4}px;animation-duration:${9+Math.random()*10}s;animation-delay:-${Math.random()*14}s"></i>`).join(''));
+  setInterval(()=>{if(document.documentElement.dataset.phase!=='night')return;const d=mk('shoot','');d.style.top=(4+Math.random()*25)+'%';d.style.left=(45+Math.random()*50)+'%';setTimeout(()=>d.remove(),1300)},9000);
+}
+window.addEventListener('load',()=>{menu();init();ambient()});
+</script>
+</body>
+</html>
